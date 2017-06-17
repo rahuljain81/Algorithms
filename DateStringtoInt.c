@@ -47,6 +47,18 @@ int main()
 	printf("The no. of days b/w the 2 dates = %d days\n", diffdays (syear, year, smonth, month, sday, day));
 
 
+	{
+		//To check overlap of dates/time
+		//https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
+		//(StartA <= EndB) && (StartB <= EndA)
+
+		//Same Date: A) Start Time 0830 End Time 1130
+		// B) Start Time 1030 End Time 1330
+		int overlap = (830 <= 1330) && (1030 <= 1130);
+		printf ("Overlap %d\n", overlap);
+
+	}
+
 	return 0;
 }
 
