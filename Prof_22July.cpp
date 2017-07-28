@@ -1,4 +1,5 @@
-#include <malloc.h>
+#include <stdlib.h>
+#include <stdio.h>
 #define MAX_ID            100
 #define MAX_CHILD		  50	
 
@@ -137,7 +138,8 @@ int getheight(int id, int option_width)
 		case VWIDGET:
 		{
 			int localmaxw = p->V.width - 2;
-			int localmaxh = p->V.height;
+			//int localmaxh = p->V.height;
+			int localmaxh = 0;
 			for (i = 0; i < p->childcount; i++)
 			{
 				tmp = getwidth(p->child[i], -1);
@@ -148,9 +150,8 @@ int getheight(int id, int option_width)
 			for (i = 0; i < p->childcount; i++)			
 				tmp += getheight(p->child[i], localmaxw);				
 			
-			p->V.width = localmaxw + 2;
-			p->V.height = (tmp > 0)? tmp: localmaxh;
-			p->V.height += 2;
+			//p->V.width = localmaxw + 2;
+			p->V.height = (tmp > 0)? (tmp+2): 2;
 			if (p->V.height > maxh)
 				maxh = p->V.height;
 			break;
@@ -217,7 +218,7 @@ int getwidth(int id, int option_height)
 		case HWIDGET:
 		{			
 			int localmaxh = p->H.height - 2;
-			int localmaxw = p->H.width;
+			int localmaxw = 0;
 			for (i = 0; i < p->childcount; i++)
 			{
 				tmp = getheight(p->child[i], -1);
@@ -228,9 +229,8 @@ int getwidth(int id, int option_height)
 			for (i = 0; i < p->childcount; i++)			
 				tmp += getwidth(p->child[i], localmaxh);
 
-			p->H.width = (tmp > 0) ? tmp : localmaxw;
-			p->H.width += 2;
-			p->H.height = localmaxh + 2;
+			p->H.width = (tmp > 0) ? (tmp+2) : 2;
+			//p->H.height = localmaxh + 2;
 			if (p->H.width > maxw)
 				maxw = p->H.width;			
 			break;
@@ -298,27 +298,29 @@ void print(char screen[MAX_SCREEN_HEIGHT][MAX_SCREEN_WIDTH], int id, int startx,
 				switch (c->type)
 				{
 					case VWIDGET:
+					//	printf ("V id %d) H%d W%d\n", p->child[ii], c->V.height, c->V.width);
 						print(screen, p->child[ii], localstartx, localstarty, c->V.height, c->V.width, 0);
 						localstartx += c->V.height;
 						c->V.height = 0;
 						break;
 					case HWIDGET:
+					//	printf ("H id %d) H%d W%d\n", p->child[ii], c->H.height, c->H.width);
 						print(screen, p->child[ii], localstartx, localstarty, c->H.height, c->H.width, 0);
 						localstartx += c->H.height;
 						c->H.width = 0;
 						break;
 					case TEXT:
 					{
-						int ques = c->T.len / p->V.width;
-						int remainder = c->T.len % p->V.width;
+						int ques = c->T.len / (p->V.width - 2);
+						int remainder = c->T.len % (p->V.width - 2);
 						for (int i = 0; i < ques; i++)
-							for (int j = 0; j < p->V.width; j++)
-								screen[localstartx + i][localstarty + j] = c->T.strPtr[i * p->V.width + j];
+							for (int j = 0; j < (p->V.width - 2); j++)
+								screen[localstartx + i][localstarty + j] = c->T.strPtr[i * (p->V.width - 2) + j];
 						localstartx += ques;
 						if (remainder)
 						{
 							for (int i = 0; i < remainder; i++)
-								screen[localstartx + 1][localstarty + i] = c->T.strPtr[ques * p->V.width + i];
+								screen[localstartx][localstarty + i] = c->T.strPtr[ques * (p->V.width - 2) + i];
 							localstartx += 1;
 						}
 						break;
@@ -346,27 +348,29 @@ void print(char screen[MAX_SCREEN_HEIGHT][MAX_SCREEN_WIDTH], int id, int startx,
 				switch (c->type)
 				{
 					case VWIDGET:
+					//	printf ("V id %d) H%d W%d\n", p->child[ii], c->V.height, c->V.width);
 						print(screen, p->child[ii], localstartx, localstarty, c->V.height, c->V.width, 0);
 						localstarty += c->V.width;
 						c->V.height = 0;
 						break;
 					case HWIDGET:
+					//	printf ("H id %d) H%d W%d\n", p->child[ii], c->H.height, c->H.width);
 						print(screen, p->child[ii], localstartx, localstarty, c->H.height, c->H.width, 0);
 						localstarty += c->H.width;
 						c->H.height = 0;
 						break;
 					case TEXT:
 					{
-						int ques = c->T.len / p->H.height;
-						int remainder = c->T.len % p->H.height;
+						int ques = c->T.len / (p->H.height - 2);
+						int remainder = c->T.len % (p->H.height - 2);
 						for (int i = 0; i < ques; i++)
-							for (int j = 0; j < p->H.height; j++)
-								screen[localstartx + j][localstarty + i] = c->T.strPtr[i * p->H.height + j];
+							for (int j = 0; j < (p->H.height - 2 ); j++)
+								screen[localstartx + j][localstarty + i] = c->T.strPtr[i * (p->H.height - 2) + j];
 						localstarty += ques;
 						if (remainder)
 						{							
 							for (int i = 0; i < remainder; i++)
-								screen[localstartx + i][localstarty] = c->T.strPtr[ques * p->H.height + i];
+								screen[localstartx + i][localstarty] = c->T.strPtr[ques * (p->H.height - 2) + i];
 							localstarty += 1;
 						}
 						break;
@@ -388,8 +392,43 @@ void print(char screen[MAX_SCREEN_HEIGHT][MAX_SCREEN_WIDTH], int id, int startx,
 
 void show(int elementId, char screen[MAX_SCREEN_HEIGHT][MAX_SCREEN_WIDTH])
 {
-	int width = getwidth(elementId, -1);
+#if 0
+	for (int i =0; i < count ; i++)
+	{
+		MyElement* p = &arr[i];
+		switch (p->type)
+		{
+			case VWIDGET:
+				{
+					printf ("V%d: W %d\n", i, p->V.width);
+					for (int j=0; j < p->childcount; j++)
+						printf ("%d ", p->child[j]);
+					printf ("\n");
+				}
+				break;
+			case HWIDGET:
+				{
+					printf ("H%d: H %d\n", i, p->V.height);
+					for (int j=0; j < p->childcount; j++)
+						printf ("%d ", p->child[j]);
+					printf ("\n");
+				}
+				break;
+			case TEXT:
+				printf ("%d: str len %d, str [%s]\n", i, p->T.len, p->T.strPtr);
+				break;
+			case IMAGE:
+				printf ("%d: image H %d, W %d\n", i, p->I.height, p->I.width);
+				break;
+		}
+	}
+#endif
 	int height = getheight(elementId, -1);
+	int width = getwidth(elementId, -1);
+
+#if 0
+	printf ("Actual id %d W %d H %d\n", elementId, width, height);
+#endif
 	print(screen, elementId, 0, 0, height, width, 1);
 	return;
 }

@@ -3,6 +3,7 @@
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #define MAX_ID            100
 
@@ -156,18 +157,26 @@ static void run() {
 			scanf("%d %d %d %d", &elementId, &height, &width, &hash);
 			show(id[elementId], screen);
 			resultHash = calcHash(screen, height, width);
+
+#if 0
+			printf ("Expected W %d H %d\n", width, height);
+			for (int y = 0; y < height; ++y)
+			{
+				for (int x = 0; x < width; ++x)
+					printf("%c", screen[y][x]);
+				printf("\n");
+			}
+#endif
+
 			if (resultHash == hash)
+			{
 				point++;
+	//			printf ("%d \n", point);
+			}
 			else
 			{
-				for (int y = 0; y < height; ++y)
-				{
-					for (int x = 0; x < width; ++x)
-						printf("%c", screen[y][x]);
-					printf("\n");
-				}
-						
 				printf("FAILED %d %d\n", hash, resultHash);
+				exit (0);
 				return;
 			}
 			break;
