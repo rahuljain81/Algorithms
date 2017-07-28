@@ -138,7 +138,6 @@ int getheight(int id, int option_width)
 		case VWIDGET:
 		{
 			int localmaxw = p->V.width - 2;
-			//int localmaxh = p->V.height;
 			int localmaxh = 0;
 			for (i = 0; i < p->childcount; i++)
 			{
@@ -150,7 +149,6 @@ int getheight(int id, int option_width)
 			for (i = 0; i < p->childcount; i++)			
 				tmp += getheight(p->child[i], localmaxw);				
 			
-			//p->V.width = localmaxw + 2;
 			p->V.height = (tmp > 0)? (tmp+2): 2;
 			if (p->V.height > maxh)
 				maxh = p->V.height;
@@ -230,7 +228,6 @@ int getwidth(int id, int option_height)
 				tmp += getwidth(p->child[i], localmaxh);
 
 			p->H.width = (tmp > 0) ? (tmp+2) : 2;
-			//p->H.height = localmaxh + 2;
 			if (p->H.width > maxw)
 				maxw = p->H.width;			
 			break;
