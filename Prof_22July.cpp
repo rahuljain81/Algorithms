@@ -149,7 +149,7 @@ int getheight(int id, int option_width)
 			for (i = 0; i < p->childcount; i++)			
 				tmp += getheight(p->child[i], localmaxw);				
 			
-			p->V.height = (tmp > 0)? (tmp+2): 2;
+			p->V.height=tmp+2;
 			if (p->V.height > maxh)
 				maxh = p->V.height;
 			break;
@@ -227,7 +227,7 @@ int getwidth(int id, int option_height)
 			for (i = 0; i < p->childcount; i++)			
 				tmp += getwidth(p->child[i], localmaxh);
 
-			p->H.width = (tmp > 0) ? (tmp+2) : 2;
+			p->H.width = tmp+2;
 			if (p->H.width > maxw)
 				maxw = p->H.width;			
 			break;
