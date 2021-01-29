@@ -1,0 +1,41 @@
+https://leetcode.com/problems/reverse-integer/submissions/
+
+Handling overflow and underflow conditions
+
+If the integer is positive, for 32 bit signed integer, INT_MAX is 2147483647 ( 2^31 − 1)
+To avoid integer overflow, we must ensure that it doesn't exceed this value. 
+This condition needs to be handled when the result is greater than or equal to INT_MAX / 10 (214748364)
+
+Case 1). If result == INT_MAX / 10, it would result in integer overflow if next integer character is greater than 7. (7 in this case is last digit of
+INT_MAX(2147483647)). We can use INT_MAX % 10  to generically represent the last digit.
+
+Case 2). If result > INT_MAX / 10 result, we are sure that adding next number would result in integer overflow.
+
+This holds for negative integer as well.
+
+In the 32-bit integer, INT_MIN value is − 2147483648 ( − 2^31). 
+As the last digit is greater than 7, integer underflow can also be handled using the above approach.
+
+how to check for overflow and underflow when numbers are added
+
+class Solution {
+public:
+    int reverse(int x) {
+
+        int rev = 0;
+        int rem = 0;
+        while (x) {
+            rem = x%10;
+            x = x/10;
+            //7 ix 0x111 so if exceeds 7, it means it jumps to next bit.
+            if ((rev > INT_MAX/10) || (rev == INT_MAX/10 && rem > 7))
+                return 0;
+            if ((rev < INT_MIN/10) || (rev == INT_MIN/10 && rem < -8))
+                return 0;
+            rev = rev*10+rem;
+        }
+        return rev;
+
+
+    }
+};
